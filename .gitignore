@@ -1,0 +1,4 @@
+grades/
+__pycache__
+chromedriver*
+test*
