@@ -5,7 +5,7 @@
 - selenium
 - chromedriver, placed relative to this directory
 
-Run the script with `py main.py` and enter your student number and password. I'm not taking your personal details, but *don't my word for it* - always check the source if you don't trust it!
+Run the script with `py main.py` and enter your student number and password. I'm not taking your personal details, but *don't take my word for it* - always check the source if you don't trust it!
 
 ---
 
