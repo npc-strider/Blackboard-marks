@@ -1,4 +1,5 @@
 grades/
+tmp/
 __pycache__
 chromedriver*
 test*

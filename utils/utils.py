@@ -1,5 +1,14 @@
 import pathlib
 import re
+from constants.constants import DL_DIR
+from utils.wait import WaitClickable
+from utils.asset import Asset
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+import os
+from pathlib import Path
+import shutil
 
 def friendly_filename(name):
     name = friendly_dirname(name)
@@ -26,6 +35,38 @@ def save_html(dir,filename,page_source):
     file = dir.joinpath(friendly_filename(filename)+".html")
     with open(file, "w", encoding="utf-8") as f:
         f.write(page_source)
+
+# Why is it so hard to just get the url of a single tab...
+# def get_fast_dl(driver,button):
+#     windows = len(driver.window_handles)
+#     return 
+
+# Because selenium seems to fuck up the url switching to a "download" tab, 
+# I have to use the inbuilt download in chrome :(. That also means no etag/metadata 
+# but to be honest it's using annotate-au.foundations.blackboard.com and not bbcswebdav system 
+# so the tag may not exist in the first place.
+def download_file(dest):
+    d = Path(DL_DIR)
+    time.sleep(2)
+    downloading = True
+    poll = 1.0
+    while downloading:
+        for f in os.listdir(d):
+            if Path(f).suffix == '.crdownload':
+                time.sleep(poll)
+                poll *= 1.5
+                break
+            else:
+                _dest = Path(dest).joinpath("MARKED__"+f)
+                try:
+                    shutil.move(d.joinpath(f),_dest)
+                except shutil.SameFileError:
+                    os.remove(_dest)
+                    shutil.move(d.joinpath(f),_dest)
+
+        if len(os.listdir(d)) == 0:
+            downloading = False
+
 
 # https://stackoverflow.com/a/19040341
 def get_text_excluding_children(driver, element):
