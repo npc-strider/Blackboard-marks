@@ -21,3 +21,4 @@ Just made it able to download the graded results which may contain annotations. 
 * Does not download turnitin reports. You have to click the link manually to the feedback site.
 * Does not download multiple submission attempts - only downloads the last/graded attempt.
 * Check that the default page is the 'all' category for the marks instead of something else like the submitted category. The script should correct this but just to be safe click on all if it isn't already
+* Sometimes chromedriver closes after logging in, when not in headless mode. Try interacting with the page before logging in.

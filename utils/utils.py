@@ -1,9 +1,6 @@
 import pathlib
 import re
 from constants.constants import DL_DIR
-from utils.wait import WaitClickable
-from utils.asset import Asset
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import os

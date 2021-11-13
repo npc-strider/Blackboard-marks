@@ -1,4 +1,3 @@
-import wget
 from constants.constants import BASE_URL
 import re
 import hashlib
@@ -26,6 +25,7 @@ class RequestStack:
     
     def download_all(self):
         for file in self.request_stack:
+            print(f"\tDownloading {file.url}")
             file.download(self.token)
 
 class Asset:
@@ -36,14 +36,14 @@ class Asset:
         self.path.mkdir(parents=True, exist_ok=True)
         super().__init__()
 
-    def download(self,req_headers):
-        response = requests.get(BASE_URL+self.url, stream=True, headers=req_headers, allow_redirects=False)
+    def download(self,session):
+        response = session.get(BASE_URL+self.url, stream=True, allow_redirects=False)
         headers = response.headers
         if response.status_code == 302 and len(headers['location']) > 0:
-            Asset(headers['location'], self.path).download(req_headers)
+            Asset(headers['location'], self.path).download(session)
             return
         elif response.status_code != 200:
-            print("Error "+str(response.status_code))
+            print("[!] Error "+str(response.status_code))
             return response.status_code
         headers = { x:re.sub(r'^"*|"*?$', '', headers.get(x)) for x in headers } # ewww regex
         if 'Content-Disposition' in headers.keys():
