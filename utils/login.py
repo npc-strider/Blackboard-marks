@@ -9,6 +9,7 @@ from constants.constants import BASE_URL
 import re
 import json
 
+
 def login(args, driver):
     driver.get(BASE_URL)
     USERNAME = args.username
@@ -19,25 +20,27 @@ def login(args, driver):
     print('Password: ')
     PASSWORD = getpass('')
 
-    WaitClickable(driver,Selectors.BOX_USERNAME).send_keys(USERNAME)
-    WaitClickable(driver,Selectors.BUTTON_NEXT).click()
+    WaitClickable(driver, Selectors.BOX_USERNAME).send_keys(USERNAME)
+    WaitClickable(driver, Selectors.BUTTON_NEXT).click()
     print('Entered username.')
 
     try:
-        WaitClickable(driver,Selectors.BOX_PASSWORD).send_keys(PASSWORD)
-        WaitClickable(driver,Selectors.BUTTON_NEXT).click()
+        WaitClickable(driver, Selectors.BOX_PASSWORD).send_keys(PASSWORD)
+        WaitClickable(driver, Selectors.BUTTON_NEXT).click()
         print('Entered password.')
     except:
-        print(WebDriverWait(driver, 1).until(EC.visibility_of_element_located(Selectors.DIV_USERERROR)).text)
+        print(WebDriverWait(driver, 1).until(
+            EC.visibility_of_element_located(Selectors.DIV_USERERROR)).text)
         driver.quit()
         exit(2)
 
-    WaitClickable(driver,Selectors.BUTTON_DENY).click()
+    WaitClickable(driver, Selectors.BUTTON_DENY).click()
     # WaitClickable(driver,BUTTON_NEXT).click() #IF you want to remember credentials, switch these comments
-    
+
     cookie = driver.get_cookies()
-    if not cookie == None: return cookie
-    
+    if not cookie == None:
+        return cookie
+
     print('Could not get auth cookie - Invalid ID or password?', file=sys.stderr)
     driver.quit()
     exit(1)

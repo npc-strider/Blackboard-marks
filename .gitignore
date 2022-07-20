@@ -4,3 +4,5 @@ __pycache__
 chromedriver*
 test*
 .vscode/
+*.7z
+*.tar

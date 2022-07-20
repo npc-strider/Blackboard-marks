@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 
+
 class Selectors:
     # Microsoft login
     BOX_USERNAME = (By.ID, "i0116")
