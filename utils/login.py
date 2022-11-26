@@ -28,7 +28,7 @@ def login(args, driver):
         WaitClickable(driver, Selectors.BOX_PASSWORD).send_keys(PASSWORD)
         WaitClickable(driver, Selectors.BUTTON_NEXT).click()
         print('Entered password.')
-    except:
+    except Exception:
         print(WebDriverWait(driver, 1).until(
             EC.visibility_of_element_located(Selectors.DIV_USERERROR)).text)
         driver.quit()
@@ -38,7 +38,7 @@ def login(args, driver):
     # WaitClickable(driver,BUTTON_NEXT).click() #IF you want to remember credentials, switch these comments
 
     cookie = driver.get_cookies()
-    if not cookie == None:
+    if cookie is not None:
         return cookie
 
     print('Could not get auth cookie - Invalid ID or password?', file=sys.stderr)

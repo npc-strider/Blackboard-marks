@@ -6,3 +6,4 @@ test*
 .vscode/
 *.7z
 *.tar
+.venv

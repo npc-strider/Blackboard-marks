@@ -1,6 +1,8 @@
+from selenium.webdriver.remote.webdriver import WebDriver
 import pathlib
 import re
-from constants.constants import DL_DIR
+from typing import Union
+from constants.constants import DL_DIR, URL_LIST
 from selenium.webdriver.support import expected_conditions as EC
 import time
 import os
@@ -23,18 +25,21 @@ def friendly_dirname(name):
     return name.strip()
 
 
-def get_assignment_name(driver, block):
+def get_assignment_name(driver: WebDriver, block):
     s = friendly_filename(get_text_excluding_children(driver, block))
-    print("Assesment: "+s)
+    print("Assesment: " + s)
     return s
 
 
-def save_html(dir, filename, page_source):
+def save_html(dir, filename, driver: WebDriver, page_log_file=False):
+    if page_log_file:
+        with open(URL_LIST, "a", encoding="utf-8") as f:
+            f.write(driver.current_url + "\n")
     dir = pathlib.Path(friendly_dirname(dir))
     dir.mkdir(parents=True, exist_ok=True)
-    file = dir.joinpath(friendly_filename(filename)+".html")
+    file = dir.joinpath(friendly_filename(filename) + ".html")
     with open(file, "w", encoding="utf-8") as f:
-        f.write(page_source)
+        f.write(driver.page_source)
 
 # NOTE: Switching to a "download" tab causes issues so we must use the in built
 # download in Chrome, which does not have etag or metadata information.
@@ -54,12 +59,12 @@ def download_file(dest):
                 poll *= 1.5
                 break
             else:
-                _dest = Path(dest).joinpath("MARKED__"+f)
+                _dest = Path(dest).joinpath("MARKED__" + f)
                 try:
-                    shutil.move(d.joinpath(f), _dest)
+                    shutil.move(str(d.joinpath(f)), _dest)
                 except shutil.SameFileError:
                     os.remove(_dest)
-                    shutil.move(d.joinpath(f), _dest)
+                    shutil.move(str(d.joinpath(f)), _dest)
 
         if len(os.listdir(d)) == 0:
             downloading = False
