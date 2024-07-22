@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 from selenium.webdriver.remote.webdriver import WebDriver
 from typing import cast
 import requests
@@ -8,6 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import ElementClickInterceptedException
 # For chrome stuff
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.options import Options
@@ -97,15 +99,26 @@ def scrape_further(driver: WebDriver, path, session):
         # cant be arsed to figure out how the pspdfkit js that executes this download works.
         SwitchToIFrame(
             driver, (By.XPATH, "//iframe[@class='docviewer_iframe_embed']"))
-        SwitchToIFrame(driver, (By.XPATH, "//iframe[@title='PSPDFKit']"))
+        # New version does not have nested iframe and uses a shadowroot instead...
+        # SwitchToIFrame(driver, (By.XPATH, "//iframe[@title='PSPDFKit']"))
         get_feedback = True
-    except Exception:
-        print("No feedback to download")
+    except: pass
+
     if get_feedback:
-        dl_button = WaitClickable(
-            driver, (By.XPATH, "//button[contains(@class,'PSPDFKit-Toolbar-Button PSPDFKit-Tool-Button')][@title='Download']"))
-        dl_button.click()
+        # dl_button = WaitClickable(driver, (By.XPATH, "//button[contains(@class,'PSPDFKit-Toolbar-Button PSPDFKit-Tool-Button')][@title='Download']"))
+        # New version does not have nested iframe and uses a shadowroot instead...
+        # Loop since it takes a while for the iframe to load...
+        while True:
+            try:
+                dl_button = driver.execute_script("return arguments[0].shadowRoot.querySelector(\"button[title='Download']\")", driver.find_element(By.XPATH, "//div[@class='PSPDFKit-Container']"))
+                dl_button.click()
+                break
+            except:
+                time.sleep(1)
         download_file(path)
+        print("[INFO]: Downloaded feedback")
+    else:
+        print("\x1b[1;31m[WARNING]\x1b\x1b[0m: No feedback to download")
     request_stack.download_all()
 # end of scrape_further
 
@@ -137,7 +150,7 @@ OPTIONS.add_argument('--disable-dev-shm-usage')
 OPTIONS.add_experimental_option("prefs", prefs)
 # OPTIONS.add_argument("--headless")
 driver = webdriver.Chrome(
-    executable_path='chromedriver.exe',
+    executable_path='chromedriver',
     desired_capabilities=CAPABILITIES,
     options=OPTIONS
 )
@@ -189,8 +202,11 @@ for i, course in enumerate(course_details):
     }
     """)
 
-    WaitClickable(driver, (By.XPATH, "//a[@value='A']")).click()
-    WaitClickable(driver, (By.XPATH, "//a[@value='A']")).click()
+    try:
+        WaitClickable(driver, (By.XPATH, "//a[@value='A']")).click()
+        WaitClickable(driver, (By.XPATH, "//a[@value='A']")).click()
+    except ElementClickInterceptedException:    # already clicked on All category - do not do anything
+        pass
 
     table = driver.find_elements(By.XPATH, "//div[@id='grades_wrapper']/div")
 

@@ -1,5 +1,7 @@
 ## Blackboard marks downloader (UWA)
 
+NOTE: _Who gives a shit about marks? I don't think I am as much of a tryhard as when I first made this script. Either way I'm still patching this when the crappy code breaks at the end of each semester..._
+
 ---
 
 **Dependencies**:

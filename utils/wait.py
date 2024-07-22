@@ -1,6 +1,6 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-timeout = 5
+timeout = 10
 
 
 def WaitClickable(driver, locator):

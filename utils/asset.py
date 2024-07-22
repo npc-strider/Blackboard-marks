@@ -66,15 +66,15 @@ class Asset:
 
     def write_metadata(self, headers):
         metacsv = [
-            ["original_filename", self.original_filename],
-            ["readable_filename", self.filename],
-            ["url", self.url],
+            ["original_filename", self.original_filename or "error"],
+            ["readable_filename", self.filename or "error"],
+            ["url", self.url or "error"],
             ["pathhash", hashlib.md5(
-                self.url.encode()).hexdigest()],
-            ["etag", headers['ETag']],
-            ["etaghash", self.etag_hash],
-            ["last-modified", headers["Last-Modified"]],
-            ["content-length", headers["Content-Length"]],
+                self.url.encode()).hexdigest() or "error"],
+            ["etag", headers['ETag'] or "error"],
+            ["etaghash", self.etag_hash or "error"],
+            ["last-modified", headers["Last-Modified"] or "error"],
+            ["content-length", headers["Content-Length"] or "error"],
             ["age", ""],
         ]
         csvpath = self.path.joinpath("ZZZ_metadata")

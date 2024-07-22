@@ -49,7 +49,7 @@ def save_html(dir, filename, driver: WebDriver, page_log_file=False):
 
 def download_file(dest):
     d = Path(DL_DIR)
-    time.sleep(2)
+    time.sleep(10)   # sorry for blocking!
     downloading = True
     poll = 1.0
     while downloading:
